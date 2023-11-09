@@ -40,7 +40,7 @@ def pdf_to_document(uploaded_file):
     return pages
 
 def get_embedding(text, model="text-embedding-ada-002"):
-   #text = text.replace("\n", " ")
+   text = text.replace("\n", " ")
    return client.embeddings.create(input = [text], model=model)['data'][0]['embedding']
 
 
