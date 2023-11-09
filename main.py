@@ -13,6 +13,9 @@ import tempfile
 import os
 from streamlit_extras.buy_me_a_coffee import button
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
+from openai import OpenAI
+
+client = OpenAI(api_key=st.secrets["api_key"])
 
 button(username="humanist96s", floating=True, width=221)
 
@@ -36,6 +39,11 @@ def pdf_to_document(uploaded_file):
     pages = loader.load_and_split()
     return pages
 
+def get_embedding(text, model="text-embedding-ada-002"):
+   text = text.replace("\n", " ")
+   return client.embeddings.create(input = [text], model=model)['data'][0]['embedding']
+
+
 #업로드 되면 동작하는 코드
 if uploaded_file is not None:
     pages = pdf_to_document(uploaded_file)
@@ -51,8 +59,9 @@ if uploaded_file is not None:
     texts = text_splitter.split_documents(pages)
 
     #Embedding
-    embeddings_model = OpenAIEmbeddings(openai_api_key=openai_key)
-
+    #embeddings_model = OpenAIEmbeddings(openai_api_key=openai_key)
+    embeddings_model = get_embedding(texts, model='text-embedding-ada-002')
+    
     # load it into Chroma
     db = Chroma.from_documents(texts, embeddings_model)
 
