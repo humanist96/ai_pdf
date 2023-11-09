@@ -59,8 +59,8 @@ if uploaded_file is not None:
     texts = text_splitter.split_documents(pages)
 
     #Embedding
-    #embeddings_model = OpenAIEmbeddings(openai_api_key=openai_key)
-    embeddings_model = get_embedding(texts, model='text-embedding-ada-002')
+    embeddings_model = OpenAIEmbeddings(openai_api_key=st.secrets["api_key"])
+    #embeddings_model = get_embedding(texts, model='text-embedding-ada-002')
     
     # load it into Chroma
     db = Chroma.from_documents(texts, embeddings_model)
